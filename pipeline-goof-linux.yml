@@ -1,0 +1,35 @@
+trigger:
+- master
+pool:
+  vmImage: 'ubuntu-latest'
+
+# pool:
+#   name: Default
+#   demands:
+#   - npm
+
+steps:
+# - task: Npm@1
+#   displayName: 'Install Node.js'
+
+- script: |
+    printenv
+  displayName: 'show env vars'
+
+- script: |
+    npm -v
+    node -v
+  displayName: 'show npm version'
+
+- script: |
+    npm install
+    npm run build
+  displayName: 'npm install and build'
+
+- task: DevSnykSecurityScan@0
+  inputs:
+    serviceConnectionEndpoint: 'mysweetconnection'
+    testType: 'app'
+    monitorOnBuild: true
+    failOnIssues: false
+    debug: true
